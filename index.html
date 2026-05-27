@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유튜버 키우기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="monitor-frame">
+        <div id="screen">
+            <!-- 게임 오프닝/엔딩 등 오버레이 -->
+            <div id="overlay-screen" class="hidden">
+                <div id="overlay-content">
+                    <h2 id="overlay-title">타이틀</h2>
+                    <p id="overlay-desc">설명</p>
+                    <button id="overlay-btn" class="retro-btn">확인</button>
+                </div>
+            </div>
+
+            <!-- 이벤트 모달 (팝업) -->
+            <div id="event-modal" class="hidden">
+                <div class="modal-window">
+                    <div class="modal-header">
+                        <span id="modal-title">알림</span>
+                    </div>
+                    <div class="modal-content">
+                        <p id="modal-desc">내용</p>
+                        <div id="modal-options" class="button-group">
+                            <!-- 동적 버튼 생성 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="top-section">
+                <!-- 좌측 상단: 방송창 (감정 상태, 뉴스) -->
+                <div id="broadcast-window" class="window-panel">
+                    <div class="window-header">LIVE BROADCAST</div>
+                    <div class="window-content">
+                        <div id="player-emotion">😐</div>
+                        <div id="news-ticker">
+                            <span id="news-text">최근 소식: 유튜버 지망생, 새로운 채널 개설!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 우측 상단: 상태창 -->
+                <div id="status-window" class="window-panel">
+                    <div class="window-header">STATUS</div>
+                    <div class="window-content">
+                        <p>Day: <span id="stat-date">1</span></p>
+                        <p>구독자 수: <span id="stat-sub">0</span> 명</p>
+                        <p>조회수: <span id="stat-view">0</span> 회</p>
+                        <p>수익: $<span id="stat-gold">0</span></p>
+                        <hr>
+                        <button id="shop-btn" class="retro-btn">상점 / 채용 열기</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 하단: 작업 구역 -->
+            <div id="work-section" class="window-panel">
+                <div class="window-header">WORKSPACE</div>
+                <div class="work-slots">
+                    <!-- 촬영 -->
+                    <div class="slot-container">
+                        <h3>촬영함</h3>
+                        <button id="btn-shoot" class="action-btn retro-btn">촬영하기</button>
+                        <div class="progress-bar"><div id="prog-shoot" class="progress-fill"></div></div>
+                        <div class="time-left" id="time-shoot" style="font-size: 12px; margin-top: 5px;">대기중</div>
+                        <div class="item-stack" id="stack-shoot" draggable="false" ondragstart="drag(event, 'shoot')" ondragend="dragEnd(event)">
+                            <div class="icon">📁</div>
+                            <div class="badge" id="badge-shoot">x0</div>
+                        </div>
+                    </div>
+
+                    <!-- 화살표 -->
+                    <div class="arrow">➔</div>
+
+                    <!-- 편집 -->
+                    <div class="slot-container" id="slot-edit" ondrop="drop(event, 'edit')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+                        <h3>편집 슬롯</h3>
+                        <p class="guide-text">(파일을 드래그하세요)</p>
+                        <div class="progress-bar"><div id="prog-edit" class="progress-fill"></div></div>
+                        <div class="time-left" id="time-edit" style="font-size: 12px; margin-top: 5px;">대기중</div>
+                        <div class="item-stack" id="stack-edit" draggable="false" ondragstart="drag(event, 'edit')" ondragend="dragEnd(event)">
+                            <div class="icon">🎬</div>
+                            <div class="badge" id="badge-edit">x0</div>
+                        </div>
+                    </div>
+
+                    <!-- 화살표 -->
+                    <div class="arrow">➔</div>
+
+                    <!-- 업로드 -->
+                    <div class="slot-container" id="slot-upload" ondrop="drop(event, 'upload')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+                        <h3>업로드 슬롯</h3>
+                        <p class="guide-text">(파일을 드래그하세요)</p>
+                        <div class="progress-bar"><div id="prog-upload" class="progress-fill"></div></div>
+                        <div class="time-left" id="time-upload" style="font-size: 12px; margin-top: 5px;">대기중</div>
+                        <div class="item-stack" id="stack-upload">
+                            <div class="icon">🌐</div>
+                            <div class="badge" id="badge-upload">x0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상점 모달 -->
+            <div id="shop-modal" class="hidden">
+                <div class="modal-window shop-window">
+                    <div class="modal-header">
+                        <span>상점 및 인력 사무소</span>
+                        <button id="shop-close" class="close-btn">X</button>
+                    </div>
+                    <div class="modal-content shop-content">
+                        <div class="shop-list">
+                            <h4>장비 (조회수 뻥튀기)</h4>
+                            <button id="buy-cam" class="retro-btn" onclick="buyItem('cam')">고급 카메라 Lv.1 (1,000원)</button>
+                            <button id="buy-app" class="retro-btn" onclick="buyItem('app')">유료 편집 어플 Lv.1 (5,000원)</button>
+                            <button id="buy-collab" class="retro-btn" onclick="buyItem('collab')">유튜버 합방권 Lv.1 (10,000원)</button>
+                        </div>
+                        <div class="shop-list">
+                            <h4>직원 (자동화 시스템)</h4>
+                            <button id="hire-shoot" class="retro-btn" onclick="buyItem('staff_shoot')">촬영 매니저 (고용비: $10,000 / 월급: $50,000)</button>
+                            <button id="hire-edit" class="retro-btn" onclick="buyItem('staff_edit')">전문 편집자 (고용비: $50,000 / 월급: $100,000)</button>
+                            <button id="hire-upload" class="retro-btn" onclick="buyItem('staff_upload')">스케줄 매니저 (고용비: $100,000 / 월급: $150,000)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
