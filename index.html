@@ -4,134 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>유튜버 키우기</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 모든 CSS 디자인을 여기에 합쳤습니다 */
+        body {
+            background-color: #f0f2f5;
+            color: #333333;
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .stats-panel {
+            background-color: #f8faac;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            font-size: 16px;
+            margin: 8px 0;
+            font-weight: bold;
+        }
+        .news-zone {
+            background-color: #1a202c;
+            color: #48bb78;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            min-height: 20px;
+        }
+        .action-card {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            height: 12px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background-color: #ed64a6;
+            transition: width 0.1s linear;
+        }
+        .game-btn {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .game-btn:hover { background-color: #3182ce; }
+        .game-btn:disabled { background-color: #cbd5e0; cursor: not-allowed; }
+        .modal-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-box {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 85%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
-    <div id="monitor-frame">
-        <div id="screen">
-            <!-- 게임 오프닝/엔딩 등 오버레이 -->
-            <div id="overlay-screen" class="hidden">
-                <div id="overlay-content">
-                    <h2 id="overlay-title">타이틀</h2>
-                    <p id="overlay-desc">설명</p>
-                    <button id="overlay-btn" class="retro-btn">확인</button>
-                </div>
-            </div>
 
-            <!-- 이벤트 모달 (팝업) -->
-            <div id="event-modal" class="hidden">
-                <div class="modal-window">
-                    <div class="modal-header">
-                        <span id="modal-title">알림</span>
-                    </div>
-                    <div class="modal-content">
-                        <p id="modal-desc">내용</p>
-                        <div id="modal-options" class="button-group">
-                            <!-- 동적 버튼 생성 -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="game-container">
+    <div class="header">
+        <h2>🎬 유튜버 키우기 타이쿤</h2>
+        <div>LIVE BROADCAST 😐</div>
+    </div>
 
-            <div id="top-section">
-                <!-- 좌측 상단: 방송창 (감정 상태, 뉴스) -->
-                <div id="broadcast-window" class="window-panel">
-                    <div class="window-header">LIVE BROADCAST</div>
-                    <div class="window-content">
-                        <div id="player-emotion">😐</div>
-                        <div id="news-ticker">
-                            <span id="news-text">최근 소식: 유튜버 지망생, 새로운 채널 개설!</span>
-                        </div>
-                    </div>
-                </div>
+    <div class="stats-panel">
+        <div class="stat-item">📅 진행 날짜: <span id="view-date">1</span>일 차</div>
+        <div class="stat-item">❤️ 구독자 수: <span id="view-subs">0</span>명</div>
+        <div class="stat-item">📈 누적 조회수: <span id="view-views">0</span>회</div>
+        <div class="stat-item">💰 보유 자금: <span id="view-gold">0</span>원</div>
+    </div>
 
-                <!-- 우측 상단: 상태창 -->
-                <div id="status-window" class="window-panel">
-                    <div class="window-header">STATUS</div>
-                    <div class="window-content">
-                        <p>Day: <span id="stat-date">1</span></p>
-                        <p>구독자 수: <span id="stat-sub">0</span> 명</p>
-                        <p>조회수: <span id="stat-view">0</span> 회</p>
-                        <p>수익: $<span id="stat-gold">0</span></p>
-                        <hr>
-                        <button id="shop-btn" class="retro-btn">상점 / 채용 열기</button>
-                    </div>
-                </div>
-            </div>
+    <div class="news-zone">
+        <div id="view-news">최근 소식: 유튜버 지망생, 새로운 채널 개설!</div>
+    </div>
 
-            <!-- 하단: 작업 구역 -->
-            <div id="work-section" class="window-panel">
-                <div class="window-header">WORKSPACE</div>
-                <div class="work-slots">
-                    <!-- 촬영 -->
-                    <div class="slot-container">
-                        <h3>촬영함</h3>
-                        <button id="btn-shoot" class="action-btn retro-btn">촬영하기</button>
-                        <div class="progress-bar"><div id="prog-shoot" class="progress-fill"></div></div>
-                        <div class="time-left" id="time-shoot" style="font-size: 12px; margin-top: 5px;">대기중</div>
-                        <div class="item-stack" id="stack-shoot" draggable="false" ondragstart="drag(event, 'shoot')" ondragend="dragEnd(event)">
-                            <div class="icon">📁</div>
-                            <div class="badge" id="badge-shoot">x0</div>
-                        </div>
-                    </div>
-
-                    <!-- 화살표 -->
-                    <div class="arrow">➔</div>
-
-                    <!-- 편집 -->
-                    <div class="slot-container" id="slot-edit" ondrop="drop(event, 'edit')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-                        <h3>편집 슬롯</h3>
-                        <p class="guide-text">(파일을 드래그하세요)</p>
-                        <div class="progress-bar"><div id="prog-edit" class="progress-fill"></div></div>
-                        <div class="time-left" id="time-edit" style="font-size: 12px; margin-top: 5px;">대기중</div>
-                        <div class="item-stack" id="stack-edit" draggable="false" ondragstart="drag(event, 'edit')" ondragend="dragEnd(event)">
-                            <div class="icon">🎬</div>
-                            <div class="badge" id="badge-edit">x0</div>
-                        </div>
-                    </div>
-
-                    <!-- 화살표 -->
-                    <div class="arrow">➔</div>
-
-                    <!-- 업로드 -->
-                    <div class="slot-container" id="slot-upload" ondrop="drop(event, 'upload')" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
-                        <h3>업로드 슬롯</h3>
-                        <p class="guide-text">(파일을 드래그하세요)</p>
-                        <div class="progress-bar"><div id="prog-upload" class="progress-fill"></div></div>
-                        <div class="time-left" id="time-upload" style="font-size: 12px; margin-top: 5px;">대기중</div>
-                        <div class="item-stack" id="stack-upload">
-                            <div class="icon">🌐</div>
-                            <div class="badge" id="badge-upload">x0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 상점 모달 -->
-            <div id="shop-modal" class="hidden">
-                <div class="modal-window shop-window">
-                    <div class="modal-header">
-                        <span>상점 및 인력 사무소</span>
-                        <button id="shop-close" class="close-btn">X</button>
-                    </div>
-                    <div class="modal-content shop-content">
-                        <div class="shop-list">
-                            <h4>장비 (조회수 뻥튀기)</h4>
-                            <button id="buy-cam" class="retro-btn" onclick="buyItem('cam')">고급 카메라 Lv.1 (1,000원)</button>
-                            <button id="buy-app" class="retro-btn" onclick="buyItem('app')">유료 편집 어플 Lv.1 (5,000원)</button>
-                            <button id="buy-collab" class="retro-btn" onclick="buyItem('collab')">유튜버 합방권 Lv.1 (10,000원)</button>
-                        </div>
-                        <div class="shop-list">
-                            <h4>직원 (자동화 시스템)</h4>
-                            <button id="hire-shoot" class="retro-btn" onclick="buyItem('staff_shoot')">촬영 매니저 (고용비: $10,000 / 월급: $50,000)</button>
-                            <button id="hire-edit" class="retro-btn" onclick="buyItem('staff_edit')">전문 편집자 (고용비: $50,000 / 월급: $100,000)</button>
-                            <button id="hire-upload" class="retro-btn" onclick="buyItem('staff_upload')">스케줄 매니저 (고용비: $100,000 / 월급: $150,000)</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="action-card">
+        <button id="btn-shoot" class="game-btn">🎥 영상 촬영하기</button>
+        <div class="progress-bar-bg">
+            <div id="fill-shoot" class="progress-bar-fill"></div>
         </div>
     </div>
-    <script src="game.js"></script>
+
+    <div class="action-card">
+        <button id="btn-edit" class="game-btn" disabled>💻 영상 편집하기 (촬영본 필요)</button>
+        <div class="progress-bar-bg">
+            <div id="fill-edit" class="progress-bar-fill"></div>
+        </div>
+    </div>
+
+    <div class="action-card">
+        <button id="btn-upload" class="game-btn" disabled>📤 유튜브 업로드 (편집본 필요)</button>
+        <div class="progress-bar-bg">
+            <div id="fill-upload" class="progress-bar-fill"></div>
+        </div>
+    </div>
+</div>
+
+<div id="start-modal" class="modal-layer">
+    <div class="modal-box">
+        <h3>📢 채널 개설 완료!</h3>
+        <p>오늘부터 1일 차 유튜버로서의 대여정이 시작됩니다. 먼저 영상을 촬영해 보세요!</p>
+        <button class="game-btn" onclick="closeStartModal()">시작하기</button>
+    </div>
+</div>
+
+<script>
+/* 모든 자바스크립트 기능을 여기에 합쳤습니다 */
+let gold = 0;
+let subs = 0;
+let views = 0;
+let date = 1;
+let shootStack = 0;
+let editStack = 0;
+let isWorking = false;
+
+function closeStartModal() {
+    document.getElementById("start-modal").classList.add("hidden");
+}
+
+document.getElementById("btn-shoot").onclick = () => {
+    if(isWorking) return;
+    isWorking = true;
+    let pct = 0;
+    const fill = document.getElementById("fill-shoot");
+    const timer = setInterval(() => {
+        pct += 5;
+        fill.style.width = pct + "%";
+        if(pct >= 100) {
+            clearInterval(timer);
+            fill.style.width = "0%";
+            shootStack++;
+            isWorking = false;
+            document.getElementById("view-news").innerText = `📰 촬영 완료! (보유 촬영본: ${shootStack}개)`;
+            checkButtons();
+        }
+    }, 100);
+};
+
+document.getElementById("btn-edit").onclick = () => {
+    if(isWorking || shootStack <= 0) return;
+    shootStack--;
+    isWorking = true;
+    let pct = 0;
+    const fill = document.getElementById("fill-edit");
+    const timer = setInterval(() => {
+        pct += 5;
+        fill.style.width = pct + "%";
+        if(pct >= 100) {
+            clearInterval(timer);
+            fill.style.width = "0%";
+            editStack++;
+            isWorking = false;
+            document.getElementById("view-news").innerText = `📰 편집 완료! (보유 편집본: ${editStack}개)`;
+            checkButtons();
+        }
+    }, 100);
+};
+
+document.getElementById("btn-upload").onclick = () => {
+    if(isWorking || editStack <= 0) return;
+    editStack--;
+    isWorking = true;
+    let pct = 0;
+    const fill = document.getElementById("fill-upload");
+    const timer = setInterval(() => {
+        pct += 5;
+        fill.style.width = pct + "%";
+        if(pct >= 100) {
+            clearInterval(timer);
+            fill.style.width = "0%";
+            
+            let newViews = Math.floor(Math.random() * 80) + 20;
+            let newSubs = Math.floor(newViews * 0.1) + 1;
+            let newGold = newViews * 2;
+            
+            views += newViews;
+            subs += newSubs;
+            gold += newGold;
+            date += Math.floor(Math.random() * 2) + 1;
+            
+            isWorking = false;
+            
+            document.getElementById("view-date").innerText = date;
+            document.getElementById("view-subs").innerText = subs;
+            document.getElementById("view-views").innerText = views;
+            document.getElementById("view-gold").innerText = gold;
+            
+            document.getElementById("view-news").innerText = `🎉 업로드 성공! 조회수 +${newViews}회 / 구독자 +${newSubs}명 / 수익 +${newGold}원`;
+            checkButtons();
+        }
+    }, 100);
+};
+
+function checkButtons() {
+    document.getElementById("btn-edit").disabled = (shootStack <= 0 || isWorking);
+    document.getElementById("btn-upload").disabled = (editStack <= 0 || isWorking);
+    document.getElementById("btn-shoot").disabled = isWorking;
+}
+</script>
 </body>
 </html>
